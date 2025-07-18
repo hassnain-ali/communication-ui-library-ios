@@ -126,7 +126,10 @@ struct CallingView: View {
                          hideDrawer: viewModel.dismissDrawer,
                          title: viewModel.captionsRttListViewModel.title,
                          startIcon: CompositeIcon.leftArrow,
-                         startIconAction: viewModel.captionsRttListViewModel.backButtonAction) {
+                         startIconAction: viewModel.captionsRttListViewModel.backButtonAction,
+                         startIconAccessibilityLabel: viewModel.captionsRttListViewModel.startIconAccessibilityValue,
+                         dismissAccessibilityLabel: viewModel.captionsRttListViewModel.dismissButtonAccessibilityValue
+            ) {
                 CaptionsRttListView(viewModel: viewModel.captionsRttListViewModel,
                                  avatarManager: avatarManager)
             }
@@ -215,14 +218,14 @@ struct CallingView: View {
         VStack(alignment: .center, spacing: 0) {
             if isIpad {
                 HStack {
-                    containerView
                     ZStack {
-                        if !viewModel.isInPip && viewModel.captionsInfoViewModel.isDisplayed {
-                            captionsAndRttIpadView
-                        }
+                        containerView
                         bottomToastDiagnosticsView
-                            .accessibilityElement(children: .contain)
+                                .accessibilityElement(children: .contain)
                         captionsErrorView.accessibilityElement(children: .contain)
+                    }
+                    if !viewModel.isInPip && viewModel.captionsInfoViewModel.isDisplayed {
+                       captionsAndRttIpadView
                     }
                 }
                 if keyboard.keyboardHeight == 0 {
