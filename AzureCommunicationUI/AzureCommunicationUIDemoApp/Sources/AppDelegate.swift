@@ -13,17 +13,17 @@ import OSLog
 import AVFoundation
 
 @main
-class AppDelegate: UIResponder, UIApplicationDelegate, PKPushRegistryDelegate, UNUserNotificationCenterDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     static var orientationLock: UIInterfaceOrientationMask = .all
 
-    let envConfigSubject = EnvConfigSubject()
+//    let envConfigSubject = EnvConfigSubject()
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
 
-        AppCenter.start(withAppSecret: envConfigSubject.appCenterSecret, services: [Crashes.self])
+//        AppCenter.start(withAppSecret: envConfigSubject.appCenterSecret, services: [Crashes.self])
         self.setupNotifications(application: application)
         return true
     }
@@ -49,59 +49,60 @@ class AppDelegate: UIResponder, UIApplicationDelegate, PKPushRegistryDelegate, U
         return AppDelegate.orientationLock
     }
 
-    func pushRegistry(_ registry: PKPushRegistry, didUpdate pushCredentials: PKPushCredentials, for type: PKPushType) {
-        guard type == .voIP else {
-            return
-        }
-
-        let tokenString = self.tokenString(from: pushCredentials.token)
-        print("VoIP Token: \(tokenString)")
-
-        if let entryViewController = findEntryViewController() {
-            entryViewController.registerDeviceToken(deviceCode: pushCredentials.token)
-        }
-    }
+//    func pushRegistry(_ registry: PKPushRegistry, didUpdate pushCredentials: PKPushCredentials, for type: PKPushType)
+//	{
+//        guard type == .voIP else {
+//            return
+//        }
+//
+//        let tokenString = self.tokenString(from: pushCredentials.token)
+//        print("VoIP Token: \(tokenString)")
+//
+//        if let entryViewController = findEntryViewController() {
+//            entryViewController.registerDeviceToken(deviceCode: pushCredentials.token)
+//        }
+//    }
 
     func pushRegistry(_ registry: PKPushRegistry,
                       didReceiveIncomingPushWith payload: PKPushPayload,
                       for type: PKPushType,
                       completion: @escaping () -> Void) {
-        print("pushRegistry payload: \(payload.dictionaryPayload)")
-        os_log("pushRegistry payload: \(payload.dictionaryPayload)")
-        if isAppInForeground() {
-            os_log("calling demo app: app is in foreground")
-            if let entryViewController = findEntryViewController() {
-                os_log("calling demo app: onPushNotificationReceived")
-                entryViewController.onPushNotificationReceived(dictionaryPayload: payload.dictionaryPayload)
-            }
-        } else {
-            os_log("calling demo app: app is not in foreground")
-            let pushInfo = PushNotification(data: payload.dictionaryPayload)
-            let providerConfig = CXProviderConfiguration()
-            providerConfig.supportsVideo = true
-            providerConfig.maximumCallGroups = 1
-            providerConfig.maximumCallsPerCallGroup = 1
-            providerConfig.includesCallsInRecents = true
-            providerConfig.supportedHandleTypes = [.phoneNumber, .generic]
-            let callKitOptions = CallKitOptions(providerConfig: providerConfig,
-                                                isCallHoldSupported: true,
-                                                provideRemoteInfo: incomingCallRemoteInfo,
-                                                configureAudioSession: configureAudioSession)
-            CallComposite.reportIncomingCall(pushNotification: pushInfo,
-                                             callKitOptions: callKitOptions) { result in
-                if case .success = result {
-                    DispatchQueue.global().async {
-                        if let entryViewController = self.findEntryViewController() {
-                            os_log("calling demo app: onPushNotificationReceivedBackgroundMode")
-                            entryViewController.onPushNotificationReceivedBackgroundMode(
-                                dictionaryPayload: payload.dictionaryPayload)
-                        }
-                    }
-                } else {
-                    os_log("calling demo app: failed on reportIncomingCall")
-                }
-            }
-        }
+//        print("pushRegistry payload: \(payload.dictionaryPayload)")
+//        os_log("pushRegistry payload: \(payload.dictionaryPayload)")
+//        if isAppInForeground() {
+//            os_log("calling demo app: app is in foreground")
+//            if let entryViewController = findEntryViewController() {
+//                os_log("calling demo app: onPushNotificationReceived")
+//                entryViewController.onPushNotificationReceived(dictionaryPayload: payload.dictionaryPayload)
+//            }
+//        } else {
+//            os_log("calling demo app: app is not in foreground")
+//            let pushInfo = PushNotification(data: payload.dictionaryPayload)
+//            let providerConfig = CXProviderConfiguration()
+//            providerConfig.supportsVideo = true
+//            providerConfig.maximumCallGroups = 1
+//            providerConfig.maximumCallsPerCallGroup = 1
+//            providerConfig.includesCallsInRecents = true
+//            providerConfig.supportedHandleTypes = [.phoneNumber, .generic]
+//            let callKitOptions = CallKitOptions(providerConfig: providerConfig,
+//                                                isCallHoldSupported: true,
+//                                                provideRemoteInfo: incomingCallRemoteInfo,
+//                                                configureAudioSession: configureAudioSession)
+//            CallComposite.reportIncomingCall(pushNotification: pushInfo,
+//                                             callKitOptions: callKitOptions) { result in
+//                if case .success = result {
+//                    DispatchQueue.global().async {
+//                        if let entryViewController = self.findEntryViewController() {
+//                            os_log("calling demo app: onPushNotificationReceivedBackgroundMode")
+//                            entryViewController.onPushNotificationReceivedBackgroundMode(
+//                                dictionaryPayload: payload.dictionaryPayload)
+//                        }
+//                    }
+//                } else {
+//                    os_log("calling demo app: failed on reportIncomingCall")
+//                }
+//            }
+//        }
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
@@ -119,16 +120,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, PKPushRegistryDelegate, U
         return configError
     }
 
-    public func incomingCallRemoteInfo(info: Caller) -> CallKitRemoteInfo {
-        let cxHandle = CXHandle(type: .generic, value: "Incoming call")
-        var remoteInfoDisplayName = envConfigSubject.callkitRemoteInfo
-        if remoteInfoDisplayName.isEmpty {
-            remoteInfoDisplayName = info.displayName
-        }
-        let callKitRemoteInfo = CallKitRemoteInfo(displayName: remoteInfoDisplayName,
-                                                               handle: cxHandle)
-        return callKitRemoteInfo
-    }
+//    public func incomingCallRemoteInfo(info: Caller) -> CallKitRemoteInfo {
+//        let cxHandle = CXHandle(type: .generic, value: "Incoming call")
+//        var remoteInfoDisplayName = envConfigSubject.callkitRemoteInfo
+//        if remoteInfoDisplayName.isEmpty {
+//            remoteInfoDisplayName = info.displayName
+//        }
+//        let callKitRemoteInfo = CallKitRemoteInfo(displayName: remoteInfoDisplayName,
+//                                                               handle: cxHandle)
+//        return callKitRemoteInfo
+//    }
 
     private func isAppInForeground() -> Bool {
         let appState = UIApplication.shared.applicationState
@@ -148,7 +149,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, PKPushRegistryDelegate, U
         // Create a push registry object
         let voipRegistry = PKPushRegistry(queue: mainQueue)
         // Set the registry's delegate to self
-        voipRegistry.delegate = self
+//        voipRegistry.delegate = self
         // Set the push type to VoIP
         voipRegistry.desiredPushTypes = [PKPushType.voIP]
     }
@@ -156,16 +157,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, PKPushRegistryDelegate, U
     private func tokenString(from data: Data) -> String {
         return data.map { String(format: "%02.2hhx", $0) }.joined()
     }
-
-    private func findEntryViewController() -> EntryViewController? {
-        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = scene.windows.first,
-              let rootViewController = window.rootViewController as? UINavigationController,
-              let entryViewController = rootViewController.viewControllers.first as? EntryViewController else {
-            return nil
-        }
-        return entryViewController
-    }
+//
+//    private func findEntryViewController() -> EntryViewController? {
+//        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+//              let window = scene.windows.first,
+//              let rootViewController = window.rootViewController as? UINavigationController,
+//              let entryViewController = rootViewController.viewControllers.first as? EntryViewController else {
+//            return nil
+//        }
+//        return entryViewController
+//    }
 
     private func setupNotifications(application: UIApplication) {
         UNUserNotificationCenter.current().delegate = self
