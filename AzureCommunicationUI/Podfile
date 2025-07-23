@@ -19,12 +19,6 @@ target 'AzureCommunicationUICalling' do
   pod 'MicrosoftFluentUI/PopupMenu_ios', '0.10.0'
   pod 'MicrosoftFluentUI/ActivityIndicator_ios', '0.10.0'
   pod 'MicrosoftFluentUI/AvatarGroup_ios', '0.10.0'
-  pod 'SwiftLint', '0.53.0'
-
-  target 'AzureCommunicationUICallingTests' do
-    # Pods for testing
-    pod 'SwiftLint', '0.53.0'
-  end
 end
 
 target 'AzureCommunicationUIChat' do
@@ -37,12 +31,6 @@ target 'AzureCommunicationUIChat' do
   pod 'MicrosoftFluentUI/PopupMenu_ios', '0.10.0'
   pod 'MicrosoftFluentUI/ActivityIndicator_ios', '0.10.0'
   pod 'MicrosoftFluentUI/AvatarGroup_ios', '0.10.0'
-  pod 'SwiftLint', '0.53.0'
-
-  target 'AzureCommunicationUIChatTests' do
-    # Pods for testing
-    pod 'SwiftLint', '0.53.0'
-  end
 end
 
 target 'AzureCommunicationUIDemoApp' do
@@ -56,16 +44,11 @@ target 'AzureCommunicationUIDemoApp' do
   pod 'MicrosoftFluentUI/PopupMenu_ios', '0.10.0'
   pod 'MicrosoftFluentUI/ActivityIndicator_ios', '0.10.0'
   pod 'MicrosoftFluentUI/AvatarGroup_ios', '0.10.0'
-  pod 'SwiftLint', '0.53.0'
   pod 'AppCenter/Crashes', '4.4.1'
 
   # Include AlamoFire for use with the User Reported Issue handler
   # pod 'Alamofire', '5.8'
 
-  target 'AzureCommunicationUIDemoAppUITests' do
-    # Pods for testing
-    pod 'SwiftLint', '0.53.0'
-  end
 end
 
 post_install do |installer|
@@ -84,11 +67,6 @@ post_install do |installer|
   end
 
   installer.pods_project.targets.each do |target|
-    if target.name == 'SwiftLint'
-      target.build_configurations.each do |config|
-        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
-      end
-    end
 
     # Get main project development team id
     dev_team = ""
